@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Père Noël Secret • Familles TISSOT</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-festive: #0f4c3a;
+            --red-festive: #e63946;
+            --gold-bright: #ffb703;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-festive);
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 90%, rgba(255, 183, 3, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+            color: #2b2b2b;
+            padding: 30px 16px 60px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Neige dorée et blanche */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: rgba(255, 255, 255, 0.8);
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* En-tête Pop & Joyeux */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .santa-hat {
+            font-size: 3.5rem;
+            display: inline-block;
+            margin-bottom: 5px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 3rem;
+            color: #ffffff;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Panneau de recherche & bouton */
+        .panel {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border-radius: 14px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            color: #1e293b;
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--red-festive);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.15);
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-copy {
+            background: var(--gold-bright);
+            color: #0f4c3a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 183, 3, 0.4);
+        }
+
+        .btn-copy:hover {
+            transform: scale(1.02);
+            background: #ffa700;
+        }
+
+        /* Grille des Cartes */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 680px) {
+            .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .pair-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .pair-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            width: 40%;
+        }
+
+        .person.giver {
+            justify-content: flex-start;
+        }
+
+        .person.receiver {
+            justify-content: flex-end;
+        }
+
+        .person-name {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .gift-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--red-festive);
+            width: 20%;
+        }
+
+        .gift-arrow i.fa-gift {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+            color: var(--gold-bright);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        .gift-arrow i.fa-arrow-right {
+            font-size: 1rem;
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #ffffff;
+            color: #0f4c3a;
+            border: 3px solid var(--gold-bright);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 2.2rem; }
+            .person-name { font-size: 1.15rem; }
+            .btn-copy { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="santa-hat">🎅</div>
+            <h1>Père Noël Secret</h1>
+            <div class="subtitle">Familles TISSOT • Le Tirage Officiel 🎁</div>
+        </header>
+
+        <div class="panel">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Rechercher par prénom..." oninput="filterResults()">
+            </div>
+            
+            <div class="controls-row">
+                <button class="btn-copy" onclick="copySummary()">
+                    <i class="fa-solid fa-copy"></i> Copier
+                </button>
+            </div>
+        </div>
+
+        <div class="results-grid" id="resultsGrid">
+            <!-- Rempli en JS -->
+        </div>
+
+        <footer>
+            <p>✨ Joyeux Noël et excellentes fêtes à toute la famille ! 🎄</p>
+        </footer>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> <span id="toastMsg">Liste copiée !</span>
+    </div>
+
+    <script>
+        const pairsData = [
+            { giver: "Mick", receiver: "Romain" },
+            { giver: "Chantal", receiver: "Jacques" },
+            { giver: "Lou", receiver: "Brigitte" },
+            { giver: "Julian", receiver: "Lorie" },
+            { giver: "Kim", receiver: "Charlotte" },
+            { giver: "Kévin", receiver: "Juliette" },
+            { giver: "Brigitte", receiver: "Mick" },
+            { giver: "Jacques", receiver: "Lou" },
+            { giver: "Margaux", receiver: "Julian" },
+            { giver: "Julien", receiver: "PA" },
+            { giver: "Sarah", receiver: "Rolland" },
+            { giver: "Rolland", receiver: "Margaux" },
+            { giver: "Charlotte", receiver: "Julien" },
+            { giver: "Romain", receiver: "Kévin" },
+            { giver: "PA", receiver: "Kim" },
+            { giver: "Lorie", receiver: "Sarah" },
+            { giver: "Juliette", receiver: "Chantal" }
+        ];
+
+        function renderPairs() {
+            const grid = document.getElementById('resultsGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            const filtered = pairsData.filter(item => {
+                return item.giver.toLowerCase().includes(search) || 
+                       item.receiver.toLowerCase().includes(search);
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ffffff;">
+                    <i class="fa-solid fa-face-frown" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p style="font-size: 1.1rem; font-weight: 600;">Aucune personne trouvée.</p>
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="pair-card">
+                    <div class="person giver">
+                        <span class="person-name">${item.giver}</span>
+                    </div>
+
+                    <div class="gift-arrow">
+                        <i class="fa-solid fa-gift"></i>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+
+                    <div class="person receiver">
+                        <span class="person-name">${item.receiver}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterResults() {
+            renderPairs();
+        }
+
+        function copySummary() {
+            let text = "🎁 *TIRAGE PÈRE NOËL SECRET INTER-FAMILLES* 🎄\n\nVoici la liste complète des cadeaux à offrir :\n\n";
+            pairsData.forEach(p => {
+                text += `• *${p.giver}* ➔ offre à *${p.receiver}*\n`;
+            });
+            text += "\n✨ Joyeux Noël et bonnes fêtes à tous ! 🎅";
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Liste copiée pour WhatsApp !");
+                confetti({
+                    particleCount: 90,
+                    spread: 60,
+                    origin: { y: 0.8 },
+                    colors: ['#ffb703', '#e63946', '#ffffff']
+                });
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function createSnow() {
+            const count = 30;
+            for (let i = 0; i < count; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerHTML = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = (Math.random() * 5 + 4) + 's';
+                flake.style.opacity = Math.random() * 0.7 + 0.3;
+                flake.style.fontSize = (Math.random() * 12 + 10) + 'px';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(flake);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPairs();
+            createSnow();
+        });
+    </script>
+</body>
+</html>
